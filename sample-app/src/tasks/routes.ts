@@ -4,9 +4,14 @@ import type { TaskStore } from './store.js';
 export function createTaskRouter(store: TaskStore): Router {
   const router = Router();
 
-  // Exercise 4: support filtering with GET /tasks?completed=true|false
-  router.get('/', (_req, res) => {
-    res.json(store.list());
+  router.get('/', (req, res) => {
+    const { completed } = req.query;
+    if (completed === undefined) return res.json(store.list());
+    if (completed !== 'true' && completed !== 'false') {
+      return res.status(400).json({ error: "completed must be 'true' or 'false'" });
+    }
+    const want = completed === 'true';
+    res.json(store.list().filter((task) => task.completed === want));
   });
 
   router.post('/', (req, res) => {
