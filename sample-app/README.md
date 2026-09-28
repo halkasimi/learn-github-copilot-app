@@ -22,7 +22,7 @@ npm start        # run the compiled server
 | Method | Path | Description |
 | --- | --- | --- |
 | `GET` | `/health` | Liveness check → `{ "status": "ok" }` |
-| `GET` | `/tasks` | List all tasks |
+| `GET` | `/tasks` | List all tasks; use `?completed=true` or `?completed=false` to filter |
 | `POST` | `/tasks` | Create a task from `{ "title": "..." }` |
 | `GET` | `/tasks/:id` | Get one task (404 if missing) |
 | `PATCH` | `/tasks/:id` | Set `{ "completed": true \| false }` |
@@ -36,7 +36,6 @@ These are the hooks for the [exercises](../exercises/README.md). Don't "fix" the
 1. `POST /tasks` does **no input validation**.
 2. There is **no `DELETE /tasks/:id`** (and `TaskStore.remove()` is missing).
 3. `setCompleted` never refreshes `updatedAt` — a subtle bug.
-4. `GET /tasks` has **no `?completed=` filter**.
 
 ## Layout
 

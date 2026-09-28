@@ -35,6 +35,26 @@ describe('Task API', () => {
     expect(patched.body.completed).toBe(true);
   });
 
+  it('lists only completed tasks when filtered', async () => {
+    const app = createApp();
+    const completed = await request(app).post('/tasks').send({ title: 'Done' });
+    await request(app).post('/tasks').send({ title: 'Not done' });
+    await request(app).patch(`/tasks/${completed.body.id}`).send({ completed: true });
+
+    const res = await request(app).get('/tasks?completed=true');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveLength(1);
+    expect(res.body[0].title).toBe('Done');
+  });
+
+  it('rejects an invalid completed filter', async () => {
+    const res = await request(createApp()).get('/tasks?completed=maybe');
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("completed must be 'true' or 'false'");
+  });
+
   it('returns 404 for an unknown task', async () => {
     const res = await request(createApp()).get('/tasks/does-not-exist');
     expect(res.status).toBe(404);
